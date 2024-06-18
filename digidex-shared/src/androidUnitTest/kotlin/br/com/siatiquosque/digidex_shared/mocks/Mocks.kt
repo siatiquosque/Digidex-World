@@ -1,0 +1,7 @@
+package br.com.siatiquosque.digidex_shared.mocks
+
+object Mocks {
+    val evolutions =
+        "[{\"id\":5,\"name\":\"Greymon\",\"hp\":null,\"mp\":null,\"offense\":100,\"defense\":100,\"speed\":100,\"brains\":100,\"care\":1,\"weight\":30,\"disc\":90,\"happy\":null,\"battles\":null,\"techs\":35,\"priority\":1,\"flags\":16},{\"id\":8,\"name\":\"Tyrannomon\",\"hp\":100,\"mp\":null,\"offense\":null,\"defense\":100,\"speed\":null,\"brains\":null,\"care\":5,\"weight\":30,\"disc\":null,\"happy\":null,\"battles\":5,\"techs\":28,\"priority\":6,\"flags\":17},{\"id\":9,\"name\":\"Meramon\",\"hp\":null,\"mp\":null,\"offense\":100,\"defense\":null,\"speed\":null,\"brains\":null,\"care\":5,\"weight\":20,\"disc\":null,\"happy\":null,\"battles\":10,\"techs\":28,\"priority\":2,\"flags\":0},{\"id\":21,\"name\":\"Birdramon\",\"hp\":null,\"mp\":null,\"offense\":null,\"defense\":null,\"speed\":100,\"brains\":null,\"care\":3,\"weight\":20,\"disc\":null,\"happy\":null,\"battles\":null,\"techs\":35,\"priority\":3,\"flags\":0},{\"id\":36,\"name\":\"Centarumon\",\"hp\":null,\"mp\":null,\"offense\":null,\"defense\":null,\"speed\":null,\"brains\":100,\"care\":3,\"weight\":30,\"disc\":60,\"happy\":null,\"battles\":null,\"techs\":28,\"priority\":4,\"flags\":16},{\"id\":47,\"name\":\"Monochromon\",\"hp\":100,\"mp\":null,\"offense\":null,\"defense\":100,\"speed\":null,\"brains\":100,\"care\":3,\"weight\":40,\"disc\":null,\"happy\":null,\"battles\":5,\"techs\":35,\"priority\":5,\"flags\":17}]"
+
+}
