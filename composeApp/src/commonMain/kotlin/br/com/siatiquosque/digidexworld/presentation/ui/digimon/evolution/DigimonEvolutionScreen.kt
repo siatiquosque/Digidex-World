@@ -229,10 +229,10 @@ fun EvolutionCard(
                 Row {
                     Row(
                         modifier = Modifier.weight(1f).padding(1.dp).border(
-                                1.dp,
-                                getColor(evolution.careEnabled == true, isHelper),
-                                shape = RoundedCornerShape(3.dp)
-                            ).padding(1.dp),
+                            1.dp,
+                            getColor(evolution.careEnabled == true, isHelper),
+                            shape = RoundedCornerShape(3.dp)
+                        ).padding(1.dp),
                     ) {
                         Text(
                             modifier = Modifier.weight(1f),
@@ -241,10 +241,10 @@ fun EvolutionCard(
                     }
                     Row(
                         modifier = Modifier.weight(1f).padding(1.dp).border(
-                                1.dp,
-                                getColor(evolution.weightEnabled == true, isHelper),
-                                shape = RoundedCornerShape(3.dp)
-                            ).padding(1.dp),
+                            1.dp,
+                            getColor(evolution.weightEnabled == true, isHelper),
+                            shape = RoundedCornerShape(3.dp)
+                        ).padding(1.dp),
                     ) {
                         Text(
                             text = "Weight: ${evolution.weight.toShow()}"
@@ -331,7 +331,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    hp = it.toIntOrNull() ?: 0
+                                    hp = it.toForm(evolutionHelper.hp)
                                 )
                             )
                         )
@@ -346,7 +346,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    mp = it.toIntOrNull() ?: 0
+                                    mp = it.toForm(evolutionHelper.mp)
                                 )
                             )
                         )
@@ -361,7 +361,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    offense = it.toIntOrNull() ?: 0
+                                    offense = it.toForm(evolutionHelper.offense)
                                 )
                             )
                         )
@@ -375,7 +375,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    defense = it.toIntOrNull() ?: 0
+                                    defense = it.toForm(evolutionHelper.defense)
                                 )
                             )
                         )
@@ -389,7 +389,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    speed = it.toIntOrNull() ?: 0
+                                    speed = it.toForm(evolutionHelper.speed)
                                 )
                             )
                         )
@@ -403,7 +403,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    brains = it.toIntOrNull() ?: 0
+                                    brains = it.toForm(evolutionHelper.brains)
                                 )
                             )
                         )
@@ -419,7 +419,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    care = it.toIntOrNull() ?: 0
+                                    care = it.toForm(evolutionHelper.care)
                                 )
                             )
                         )
@@ -433,7 +433,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    weight = it.toIntOrNull() ?: 0
+                                    weight = it.toForm(evolutionHelper.weight)
                                 )
                             )
                         )
@@ -450,7 +450,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    happy = it.toIntOrNull() ?: 0
+                                    happy = it.toForm(evolutionHelper.happy)
                                 )
                             )
                         )
@@ -464,7 +464,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    disc = it.toIntOrNull() ?: 0
+                                    disc = it.toForm(evolutionHelper.disc)
                                 )
                             )
                         )
@@ -478,7 +478,7 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    battles = it.toIntOrNull() ?: 0
+                                    battles = it.toForm(evolutionHelper.battles)
                                 )
                             )
                         )
@@ -492,23 +492,41 @@ private fun DigimonBottomSheet(
                         event(
                             DigimonEvolutionEvent.EvolutionHelperUpdate(
                                 evolutionHelper.copy(
-                                    techs = it.toIntOrNull() ?: 0
+                                    techs = it.toForm(evolutionHelper.techs)
                                 )
                             )
                         )
-                    }, keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
                         keyboardType = KeyboardType.Number,
-                    )
+                    ),
+                    onDone = {
+                        event(
+                            DigimonEvolutionEvent.ApplyHelper()
+                        )
+                        onHide()
+                    }
+
                 )
 
-                Button(onClick = {
-                    event(
-                        DigimonEvolutionEvent.ApplyHelper()
-                    )
-                    onHide()
-                }) {
-                    Text("Apply")
+                Row {
+                    Button(onClick = {
+                        event(
+                            DigimonEvolutionEvent.ClearHelper()
+                        )
+                    }) {
+                        Text("Clear")
+                    }
+
+                    Button(onClick = {
+                        event(
+                            DigimonEvolutionEvent.ApplyHelper()
+                        )
+                        onHide()
+                    }) {
+                        Text("Apply")
+                    }
                 }
             }
         }) {
@@ -522,7 +540,8 @@ fun RowEvolutionHelper(
     label: String,
     value: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onDone: () -> Unit = {},
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -550,6 +569,7 @@ fun RowEvolutionHelper(
                 keyboardOptions = keyboardOptions,
                 keyboardActions = KeyboardActions(
                     onDone = {
+                        onDone()
                         keyboardController?.hide()
                     },
                 ),
@@ -569,4 +589,17 @@ fun Int?.toShow(): String {
 
 fun Int?.toValue(): String {
     return this?.toString() ?: ""
+}
+
+fun String.toForm(default: Int? = 0): Int? {
+    return if (this.isEmpty()) {
+        null
+    } else {
+        if (this.toIntOrNull() == null) {
+            default
+        } else {
+            this.toIntOrNull()
+        }
+    }
+
 }

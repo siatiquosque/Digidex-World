@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.siatiquosque.digidex_shared.data.model.dw1.Evolution
+import br.com.siatiquosque.digidex_shared.data.model.dw1.EvolutionHelper
 import br.com.siatiquosque.digidex_shared.domain.DigimonWorld1Interactor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
-class DigimonEvolutionViewModel(val digimonWorld1Interactor: DigimonWorld1Interactor) :
+class DigimonEvolutionViewModel(
+    val digimonWorld1Interactor: DigimonWorld1Interactor,
+) :
     ViewModel() {
 
 
@@ -28,6 +31,7 @@ class DigimonEvolutionViewModel(val digimonWorld1Interactor: DigimonWorld1Intera
             is DigimonEvolutionEvent.GetDigimon -> getDigimon(event.id)
             is DigimonEvolutionEvent.EvolutionHelperUpdate -> _uiState.update { it.copy(digimon = event.evolutionHelper) }
             is DigimonEvolutionEvent.ApplyHelper -> applyHelper()
+            is DigimonEvolutionEvent.ClearHelper -> _uiState.update { it.copy(digimon = EvolutionHelper()) }
         }
     }
 

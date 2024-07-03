@@ -112,8 +112,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
         return digimon
     }
 
-    fun checkDigievolution(digimon: EvolutionHelper, evolution: List<Evolution>): List<Evolution> {
-        return when (digimon.level) {
+    fun checkDigievolution(helper: EvolutionHelper, evolution: List<Evolution>): List<Evolution> {
+        return when (helper.level) {
             "ROOKIE", "CHAMPION" -> {
                 var carriedOverStats = 0
                 var carriedOverCount = 0
@@ -128,61 +128,61 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     var reqStats = 0
 
                     //begin Stats
-                    digimon.hp?.let { hp ->
+                    helper.hp?.let { hp ->
                         if (it.hp != null) {
                             reqStats++
+                            statsSum += hp / 10
                             if (hp / 10 >= it.hp) {
-                                statsSum += hp / 10
                                 statsCount++
                             }
                         }
                     }
 
-                    digimon.mp?.let { mp ->
+                    helper.mp?.let { mp ->
                         if (it.mp != null) {
                             reqStats++
+                            statsSum += mp / 10
                             if (mp / 10 >= it.mp) {
-                                statsSum += mp / 10
                                 statsCount++
                             }
                         }
                     }
 
-                    digimon.offense?.let { offense ->
+                    helper.offense?.let { offense ->
                         if (it.offense != null) {
                             reqStats++
+                            statsSum += offense
                             if (offense >= it.offense) {
-                                statsSum += offense
                                 statsCount++
                             }
                         }
                     }
 
-                    digimon.defense?.let { defense ->
+                    helper.defense?.let { defense ->
                         if (it.defense != null) {
                             reqStats++
+                            statsSum += defense
                             if (defense >= it.defense) {
-                                statsSum += defense
                                 statsCount++
                             }
                         }
                     }
 
-                    digimon.speed?.let { speed ->
+                    helper.speed?.let { speed ->
                         if (it.speed != null) {
                             reqStats++
+                            statsSum += speed
                             if (speed >= it.speed) {
-                                statsSum += speed
                                 statsCount++
                             }
                         }
                     }
 
-                    digimon.brains?.let { speed ->
+                    helper.brains?.let { speed ->
                         if (it.brains != null) {
                             reqStats++
+                            statsSum += speed
                             if (speed >= it.brains) {
-                                statsSum += speed
                                 statsCount++
                             }
                         }
@@ -201,8 +201,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     //begin Care
                     //                digimon.care?.let { care ->
                     if (it.care != null &&
-                        ((it.flags?.shr(4)?.and(1) == 1 && (digimon.care ?: 0) <= it.care) ||
-                                (it.flags?.shr(4)?.and(1) == 0 && (digimon.care ?: 0) >= it.care))
+                        ((it.flags?.shr(4)?.and(1) == 1 && (helper.care ?: 0) <= it.care) ||
+                                (it.flags?.shr(4)?.and(1) == 0 && (helper.care ?: 0) >= it.care))
                     ) {
                         it.careEnabled = true
                         reqEnabled++
@@ -212,8 +212,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
 
                     //begin Weight
                     //                digimon.weight?.let { weight ->
-                    if (it.weight != null && ((digimon.weight
-                            ?: 0) >= it.weight - 5 && (digimon.weight
+                    if (it.weight != null && ((helper.weight
+                            ?: 0) >= it.weight - 5 && (helper.weight
                             ?: 0) <= it.weight + 5)
                     ) {
                         it.weightEnabled = true
@@ -222,49 +222,55 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     //                }
                     //end Weight
 
+                    var reqBonus = 0
+
                     //begin Bonus
                     //                digimon.happy?.let { happy ->
                     if (it.happy != null &&
-                        ((it.flags?.shr(1)?.and(1) == 1 && (digimon.happy ?: 0) <= it.happy) ||
-                                (it.flags?.shr(1)?.and(1) == 0 && (digimon.happy ?: 0) >= it.happy))
+                        ((it.flags?.shr(1)?.and(1) == 1 && (helper.happy ?: 0) <= it.happy) ||
+                                (it.flags?.shr(1)?.and(1) == 0 && (helper.happy ?: 0) >= it.happy))
                     ) {
                         it.bonusEnabled = true
-                        reqEnabled++
+                        reqBonus++
                     }
                     //                }
                     //                digimon.disc?.let { disc ->
                     if (it.disc != null &&
-                        ((it.flags?.shr(2)?.and(1) == 1 && (digimon.disc ?: 0) <= it.disc) ||
-                                (it.flags?.shr(2)?.and(1) == 0 && (digimon.disc ?: 0) >= it.disc))
+                        ((it.flags?.shr(2)?.and(1) == 1 && (helper.disc ?: 0) <= it.disc) ||
+                                (it.flags?.shr(2)?.and(1) == 0 && (helper.disc ?: 0) >= it.disc))
                     ) {
                         it.bonusEnabled = true
-                        reqEnabled++
+                        reqBonus++
                     }
                     //                }
 
                     //                digimon.battles?.let { battles ->
                     if (it.battles != null &&
-                        ((it.flags?.shr(0)?.and(1) == 1 && (digimon.battles ?: 0) <= it.battles) ||
-                                (it.flags?.shr(0)?.and(1) == 0 && (digimon.battles
+                        ((it.flags?.shr(0)?.and(1) == 1 && (helper.battles ?: 0) <= it.battles) ||
+                                (it.flags?.shr(0)?.and(1) == 0 && (helper.battles
                                     ?: 0) >= it.battles))
                     ) {
                         it.bonusEnabled = true
-                        reqEnabled++
+                        reqBonus++
                     }
                     //                }
 
                     //                digimon.techs?.let { techs ->
-                    if (it.techs != null && (digimon.techs ?: 0) >= it.techs) {
+                    if (it.techs != null && (helper.techs ?: 0) >= it.techs) {
                         it.bonusEnabled = true
-                        reqEnabled++
+                        reqBonus++
                     }
                     //                }
 
-                    if (digimon.name == it.bonus) {
+                    if (helper.name == it.bonus) {
                         it.bonusEnabled = true
-                        reqEnabled++
+                        reqBonus++
                     }
                     //end Bonus
+
+                    if(reqBonus > 0){
+                        reqEnabled++
+                    }
 
                     //Check Enabled
                     if (reqEnabled >= 3) {
@@ -272,8 +278,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     }
 
                     //Check Score
-                    if (it.enabled && statsCount > 0) {
-                        it.score = (statsSum + carriedOverStats) / (statsCount + carriedOverCount)
+                    if (it.enabled) {
+                        it.score = (statsSum + carriedOverStats) / (reqStats + carriedOverCount)
 
                         //Check Score
                         if ((it.score ?: 0) <= maxScore) {
@@ -305,7 +311,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     var reqStats = 0
 
                     //begin Stats
-                    digimon.hp?.let { hp ->
+                    helper.hp?.let { hp ->
                         if (it.hp != null) {
                             reqStats++
                             if (hp > 0) {
@@ -317,7 +323,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                         }
                     }
 
-                    digimon.mp?.let { mp ->
+                    helper.mp?.let { mp ->
                         if (it.mp != null) {
                             reqStats++
                             if (mp > 0) {
@@ -329,7 +335,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                         }
                     }
 
-                    digimon.offense?.let { offense ->
+                    helper.offense?.let { offense ->
                         if (it.offense != null) {
                             reqStats++
                             if (offense >= it.offense) {
@@ -341,7 +347,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                         }
                     }
 
-                    digimon.defense?.let { defense ->
+                    helper.defense?.let { defense ->
                         if (it.defense != null) {
                             reqStats++
                             if (defense >= it.defense) {
@@ -353,7 +359,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                         }
                     }
 
-                    digimon.speed?.let { speed ->
+                    helper.speed?.let { speed ->
                         if (it.speed != null) {
                             reqStats++
                             if (speed >= it.speed) {
@@ -365,7 +371,7 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                         }
                     }
 
-                    digimon.brains?.let { speed ->
+                    helper.brains?.let { speed ->
                         if (it.brains != null) {
                             reqStats++
                             if (speed >= it.brains) {
@@ -390,8 +396,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     //begin Care
                     //                digimon.care?.let { care ->
                     if (it.care != null &&
-                        ((it.flags?.shr(4)?.and(1) == 1 && (digimon.care ?: 0) <= it.care) ||
-                                (it.flags?.shr(4)?.and(1) == 0 && (digimon.care ?: 0) >= it.care))
+                        ((it.flags?.shr(4)?.and(1) == 1 && (helper.care ?: 0) <= it.care) ||
+                                (it.flags?.shr(4)?.and(1) == 0 && (helper.care ?: 0) >= it.care))
                     ) {
                         it.careEnabled = true
                         reqEnabled++
@@ -401,8 +407,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
 
                     //begin Weight
                     //                digimon.weight?.let { weight ->
-                    if (it.weight != null && ((digimon.weight
-                            ?: 0) >= it.weight - 5 && (digimon.weight
+                    if (it.weight != null && ((helper.weight
+                            ?: 0) >= it.weight - 5 && (helper.weight
                             ?: 0) <= it.weight + 5)
                     ) {
                         it.weightEnabled = true
@@ -414,16 +420,16 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     //begin Bonus
                     //                digimon.happy?.let { happy ->
                     if (it.happy != null &&
-                        ((it.flags?.shr(1)?.and(1) == 1 && (digimon.happy ?: 0) <= it.happy) ||
-                                (it.flags?.shr(1)?.and(1) == 0 && (digimon.happy ?: 0) >= it.happy))
+                        ((it.flags?.shr(1)?.and(1) == 1 && (helper.happy ?: 0) <= it.happy) ||
+                                (it.flags?.shr(1)?.and(1) == 0 && (helper.happy ?: 0) >= it.happy))
                     ) {
                         reqEnabled++
                     }
                     //                }
                     //                digimon.disc?.let { disc ->
                     if (it.disc != null &&
-                        ((it.flags?.shr(2)?.and(1) == 1 && (digimon.disc ?: 0) <= it.disc) ||
-                                (it.flags?.shr(2)?.and(1) == 0 && (digimon.disc ?: 0) >= it.disc))
+                        ((it.flags?.shr(2)?.and(1) == 1 && (helper.disc ?: 0) <= it.disc) ||
+                                (it.flags?.shr(2)?.and(1) == 0 && (helper.disc ?: 0) >= it.disc))
                     ) {
                         reqEnabled++
                     }
@@ -431,8 +437,8 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
 
                     //                digimon.battles?.let { battles ->
                     if (it.battles != null &&
-                        ((it.flags?.shr(0)?.and(1) == 1 && (digimon.battles ?: 0) <= it.battles) ||
-                                (it.flags?.shr(0)?.and(1) == 0 && (digimon.battles
+                        ((it.flags?.shr(0)?.and(1) == 1 && (helper.battles ?: 0) <= it.battles) ||
+                                (it.flags?.shr(0)?.and(1) == 0 && (helper.battles
                                     ?: 0) >= it.battles))
                     ) {
                         it.bonusEnabled = true
@@ -441,13 +447,13 @@ class DigimonWorld1Interactor(private val digimonsDAO: DigimonsDAO) {
                     //                }
 
                     //                digimon.techs?.let { techs ->
-                    if (it.techs != null && (digimon.techs ?: 0) >= it.techs) {
+                    if (it.techs != null && (helper.techs ?: 0) >= it.techs) {
                         it.bonusEnabled = true
                         reqEnabled++
                     }
                     //                }
 
-                    if (digimon.name == it.bonus) {
+                    if (helper.name == it.bonus) {
                         it.bonusEnabled = true
                         reqEnabled++
                     }

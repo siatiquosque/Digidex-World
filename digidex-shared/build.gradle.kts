@@ -40,7 +40,7 @@ kotlin {
 
             api(libs.kotlinx.coroutines.core)
 
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(compose.components.resources)
             //Room
@@ -52,10 +52,11 @@ kotlin {
             api(libs.koin.core)
             api(libs.koin.compose)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.koin.test)
-            implementation("io.mockative:mockative:2.2.2")
+            implementation(libs.mockative)
         }
 
         androidMain.dependencies {
@@ -65,7 +66,7 @@ kotlin {
         }
 
         iosMain.dependencies {
-            implementation("co.touchlab:sqliter-driver:1.3.1")
+            implementation(libs.sqliter.driver)
         }
 
 
@@ -74,13 +75,10 @@ kotlin {
 task("testClasses")
 
 dependencies {
-    configurations
-        .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
-        .forEach {
-            add(it.name, "io.mockative:mockative-processor:2.2.2")
-        }
+    add("kspAndroidTest", libs.mockative.processor)
+    add("kspCommonMainMetadata", libs.androidx.room.ksp)
+    add("kspAndroid", libs.androidx.room.ksp)
 
-    ksp(libs.androidx.room.ksp)
 
 }
 

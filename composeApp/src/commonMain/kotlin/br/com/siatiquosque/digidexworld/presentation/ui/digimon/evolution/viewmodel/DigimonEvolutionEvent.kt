@@ -7,6 +7,7 @@ sealed class DigimonEvolutionEvent {
     data class GetDigimon(val id: Int) : DigimonEvolutionEvent()
     data class EvolutionHelperUpdate(val evolutionHelper: EvolutionHelper) : DigimonEvolutionEvent()
     class ApplyHelper : DigimonEvolutionEvent()
+    class ClearHelper : DigimonEvolutionEvent()
 
 
 }

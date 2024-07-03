@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import br.com.siatiquosque.digidex_shared.data.model.dw1.EvolutionHelper
 import br.com.siatiquosque.digidex_shared.data.model.dw1.Technique
 import br.com.siatiquosque.digidex_shared.domain.DigimonWorld1Interactor
 import br.com.siatiquosque.digidexworld.presentation.navigation.DigimonNavigation
@@ -32,6 +33,9 @@ fun DigimonListNav(
     scrollDigimonState: LazyGridState,
     goToTechnique: (Int) -> Unit,
 ) {
+
+    val interactor: DigimonWorld1Interactor = koinInject()
+    val viewModelEvolution: DigimonEvolutionViewModel = viewModel { DigimonEvolutionViewModel(interactor) }
 
     NavHost(
         startDestination = DigimonNavigation.List.route,
@@ -92,14 +96,13 @@ fun DigimonListNav(
             val id = argument?.getInt("id")
 
             id?.let {
-                val viewModel: DigimonEvolutionViewModel = koinInject()
                 LaunchedEffect(id) {
-                    viewModel.onTriggerEvent(DigimonEvolutionEvent.GetDigimon(id))
+                    viewModelEvolution.onTriggerEvent(DigimonEvolutionEvent.GetDigimon(id))
                 }
 
                 DigimonEvolutionScreen(
-                    state = viewModel.uiState,
-                    event = viewModel::onTriggerEvent,
+                    state = viewModelEvolution.uiState,
+                    event = viewModelEvolution::onTriggerEvent,
                     goToEvolution = {
                         navigator.navigate(DigimonNavigation.Evolutions.route.plus("/$it")) {
 //                            launchSingleTop = true
